@@ -1,0 +1,17 @@
+spring:
+  application:
+    name:nextrep
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nextrep
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    datasource-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  flyway:
+    enabled: true
+
