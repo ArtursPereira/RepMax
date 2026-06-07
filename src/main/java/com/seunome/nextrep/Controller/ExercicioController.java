@@ -39,4 +39,11 @@ public class ExercicioController {
         exercicioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public  ResponseEntity<Exercicio> updateExercicioById(@PathVariable Long id, @RequestBody Exercicio exercicio){
+        Exercicio exercicioAtualizado = exercicioService.update(id, exercicio);
+        return ResponseEntity.ok(exercicioAtualizado);
+
+    }
 }
