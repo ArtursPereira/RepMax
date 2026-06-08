@@ -23,7 +23,7 @@ public class AlunoController {
     }
 
     @GetMapping("{/id}")
-    public ResponseEntity<Aluno> getAlunoById(Long id){
+    public ResponseEntity<Aluno> getAlunoById(@PathVariable Long id){
         return alunoService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -36,8 +36,14 @@ public class AlunoController {
     }
 
     @DeleteMapping("{/id}")
-    public ResponseEntity<Void> deleteAlunoById(Long id) {
+    public ResponseEntity<Void> deleteAlunoById(@PathVariable Long id) {
         alunoService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping("{/id}")
+    public ResponseEntity<Aluno> updateAluno (@PathVariable Long id, @RequestBody Aluno aluno ){
+        Aluno alunoAtualizado = alunoService.update(id, aluno);
+        return ResponseEntity.ok(alunoAtualizado);
+
     }
 }
