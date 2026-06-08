@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController()
-@RequestMapping("/repmax/alunos")
+@RequestMapping("/nextrep/alunos")
 @RequiredArgsConstructor
 public class AlunoController {
 
@@ -22,25 +22,25 @@ public class AlunoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoSalvo);
     }
 
-    @GetMapping("{/id}")
-    public ResponseEntity<Aluno> getAlunoById(@PathVariable Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Aluno> findAlunoById(@PathVariable Long id){
         return alunoService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<Aluno>> getAlunos(){
+    public ResponseEntity<List<Aluno>> findAllAlunos(){
         List<Aluno> alunos = alunoService.findAll();
         return ResponseEntity.ok(alunos);
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAlunoById(@PathVariable Long id) {
         alunoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-    @PutMapping("{/id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Aluno> updateAluno (@PathVariable Long id, @RequestBody Aluno aluno ){
         Aluno alunoAtualizado = alunoService.update(id, aluno);
         return ResponseEntity.ok(alunoAtualizado);

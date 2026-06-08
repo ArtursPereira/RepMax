@@ -22,13 +22,13 @@ public class ExercicioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Exercicio>> getAllExercicio() {
+    public ResponseEntity<List<Exercicio>> findAllExercicio() {
         List<Exercicio> exercicios = exercicioService.findAll();
         return ResponseEntity.ok(exercicios);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Exercicio> getExercicioById(@PathVariable Long id) {
+    public ResponseEntity<Exercicio> findExercicioById(@PathVariable Long id) {
         return exercicioService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
