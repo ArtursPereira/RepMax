@@ -1,5 +1,8 @@
 package com.seunome.nextrep.Controller;
 
+import com.seunome.nextrep.DTO.mapper.ExercicioMapper;
+import com.seunome.nextrep.DTO.request.ExercicioRequest;
+import com.seunome.nextrep.DTO.response.ExercicioResponse;
 import com.seunome.nextrep.Entity.Exercicio;
 import com.seunome.nextrep.Service.ExercicioService;
 import lombok.RequiredArgsConstructor;
@@ -16,20 +19,26 @@ public class ExercicioController {
     private final ExercicioService exercicioService;
 
     @PostMapping
-    public ResponseEntity<Exercicio> saveExercicio(@RequestBody Exercicio exercicio) {
-         Exercicio exerciciosalvo =  exercicioService.save(exercicio);
-         return ResponseEntity.status(HttpStatus.CREATED).body(exerciciosalvo);
+    public ResponseEntity<ExercicioResponse> saveExercicio(@RequestBody ExercicioRequest exercicioRequest) {
+         Exercicio exercicioSalvo = ExercicioMapper.toEntity(exercicioRequest);
+         exercicioSalvo = exercicioService.save(exercicioSalvo);
+         ExercicioResponse exercicioSalvoResponse = ExercicioMapper.toResponse(exercicioSalvo);
+         return ResponseEntity.status(HttpStatus.CREATED).body(exercicioSalvoResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Exercicio>> findAllExercicio() {
-        List<Exercicio> exercicios = exercicioService.findAll();
+    public ResponseEntity<List<ExercicioResponse>> findAllExercicio() {
+        List<ExercicioResponse> exercicios = exercicioService.findAll()
+                .stream()
+                .map(ExercicioMapper::toResponse)
+                .toList();
         return ResponseEntity.ok(exercicios);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Exercicio> findExercicioById(@PathVariable Long id) {
+    public ResponseEntity<ExercicioResponse> findExercicioById(@PathVariable Long id) {
         return exercicioService.findById(id)
+                .map(ExercicioMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -41,9 +50,12 @@ public class ExercicioController {
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<Exercicio> updateExercicioById(@PathVariable Long id, @RequestBody Exercicio exercicio){
-        Exercicio exercicioAtualizado = exercicioService.update(id, exercicio);
-        return ResponseEntity.ok(exercicioAtualizado);
+    public  ResponseEntity<ExercicioResponse> updateExercicioById(@PathVariable Long id, @RequestBody ExercicioRequest exercicioRequest){
+
+        Exercicio exercicioAtualizado = ExercicioMapper.toEntity(exercicioRequest);
+        exercicioAtualizado = exercicioService.update(id, exercicioAtualizado);
+        ExercicioResponse response = ExercicioMapper.toResponse(exercicioAtualizado);
+        return ResponseEntity.ok(response);
 
     }
 }
