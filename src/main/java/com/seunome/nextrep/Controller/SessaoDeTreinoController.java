@@ -1,6 +1,9 @@
 package com.seunome.nextrep.Controller;
 
 
+import com.seunome.nextrep.DTO.mapper.SessaoDeTreinoMapper;
+import com.seunome.nextrep.DTO.request.SessaoDeTreinoRequest;
+import com.seunome.nextrep.DTO.response.SessaoDeTreinoResponse;
 import com.seunome.nextrep.Entity.SessaoDeTreino;
 import com.seunome.nextrep.Service.SessaoDeTreinoService;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +21,26 @@ public class SessaoDeTreinoController {
     private final SessaoDeTreinoService sessaoDeTreinoService;
 
     @PostMapping
-    public ResponseEntity<SessaoDeTreino> saveSessaoDeTreino(@RequestBody SessaoDeTreino sessaoDeTreino) {
-        SessaoDeTreino sessaoDeTreino1 = sessaoDeTreinoService.save(sessaoDeTreino);
-        return ResponseEntity.status(HttpStatus.CREATED).body(sessaoDeTreino1);
+    public ResponseEntity<SessaoDeTreinoResponse> saveSessaoDeTreino(@RequestBody SessaoDeTreinoRequest sessaoDeTreinoRequest) {
+        SessaoDeTreino sessaoDeTreino1 = SessaoDeTreinoMapper.toEntity(sessaoDeTreinoRequest);
+        sessaoDeTreino1 = sessaoDeTreinoService.save(sessaoDeTreino1);
+        SessaoDeTreinoResponse sessaoDeTreinoResponse = SessaoDeTreinoMapper.toResponse(sessaoDeTreino1);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sessaoDeTreinoResponse);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<SessaoDeTreino> findSessaoDeTreinoById(@PathVariable Long id) {
+    public ResponseEntity<SessaoDeTreinoResponse> findSessaoDeTreinoById(@PathVariable Long id) {
         return sessaoDeTreinoService.findById(id)
+                .map(SessaoDeTreinoMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping()
-    public ResponseEntity<List<SessaoDeTreino>> findAllSessoesDeTreino() {
-        List<SessaoDeTreino> sessoesDeTreino = sessaoDeTreinoService.findAll();
+    public ResponseEntity<List<SessaoDeTreinoResponse>> findAllSessoesDeTreino() {
+        List<SessaoDeTreinoResponse> sessoesDeTreino = sessaoDeTreinoService.findAll()
+                .stream()
+                .map(SessaoDeTreinoMapper::toResponse)
+                .toList();
         return ResponseEntity.ok(sessoesDeTreino);
     }
 
@@ -42,9 +51,11 @@ public class SessaoDeTreinoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SessaoDeTreino> updateSessaoDeTreinoById(@PathVariable Long id, @RequestBody SessaoDeTreino sessaoDeTreino){
-        SessaoDeTreino sessaoDeTreinoAtualizado = sessaoDeTreinoService.update(id, sessaoDeTreino);
-        return ResponseEntity.ok(sessaoDeTreinoAtualizado);
+    public ResponseEntity<SessaoDeTreinoResponse> updateSessaoDeTreinoById(@PathVariable Long id, @RequestBody SessaoDeTreinoRequest sessaoDeTreinoRequest){
+        SessaoDeTreino sessaoDeTreinoAtualizado = SessaoDeTreinoMapper.toEntity(sessaoDeTreinoRequest);
+        sessaoDeTreinoAtualizado = sessaoDeTreinoService.update(id, sessaoDeTreinoAtualizado);
+        SessaoDeTreinoResponse sessaoDeTreinoResponse = SessaoDeTreinoMapper.toResponse(sessaoDeTreinoAtualizado);
+        return ResponseEntity.ok(sessaoDeTreinoResponse);
     }
 
 
