@@ -58,5 +58,18 @@ public class SessaoDeTreinoController {
         return ResponseEntity.ok(sessaoDeTreinoResponse);
     }
 
+    @PostMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}")
+    public ResponseEntity<SessaoDeTreinoResponse> adicionarExercicioRealizado(@PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId){
+        SessaoDeTreino sessaoDeTreino =  sessaoDeTreinoService.addExercicioRealizado(sessaoId, exercicioRealizadoId);
+        SessaoDeTreinoResponse sessaoDeTreinoResponse = SessaoDeTreinoMapper.toResponse(sessaoDeTreino);
+        return  ResponseEntity.ok().body(sessaoDeTreinoResponse);
+    }
+
+    @DeleteMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}")
+    public  ResponseEntity<Void> removerExercicioRealizado(@PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId) {
+        sessaoDeTreinoService.removeExercicioRealizado(sessaoId, exercicioRealizadoId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
