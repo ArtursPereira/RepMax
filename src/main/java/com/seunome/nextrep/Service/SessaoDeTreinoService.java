@@ -73,7 +73,7 @@ public class SessaoDeTreinoService {
         sessaoDeTreinoRepository.save(sessaoDeTreino);
     }
 
-    public void addSerie(Long idSessao, Long idExercicioRealizado, float carga, int repeticoes) {
+    public SessaoDeTreino addSerie(Long idSessao, Long idExercicioRealizado, float carga, int repeticoes) {
         SessaoDeTreino sessaoDeTreino = sessaoDeTreinoRepository.findById(idSessao)
                 .orElseThrow(() -> new RuntimeException("Sessao de treino nao encontrada"));
 
@@ -87,6 +87,27 @@ public class SessaoDeTreinoService {
         serie.setCarga(carga);
         serie.setReps(repeticoes);
         exercicioRealizado.getSeries().add(serie);
+        return  sessaoDeTreinoRepository.save(sessaoDeTreino);
 
+    }
+
+    public void removeSerie(Long idSessao, Long idExercicioRealizado, Long idSerie) {
+        SessaoDeTreino sessaoDeTreino = sessaoDeTreinoRepository.findById(idSessao)
+                .orElseThrow(() -> new RuntimeException("Sessao de Treino nao encontrada"));
+
+        ExercicioRealizado exercicioRealizado = sessaoDeTreino.getExercicioRealizados()
+                .stream()
+                .filter(er -> er.getId().equals(idExercicioRealizado))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Exercicio Realizado nao encontrado"));
+
+        Serie serie = exercicioRealizado.getSeries()
+                .stream()
+                .filter(se -> se.getId().equals(idSerie))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Serie nao encontrada"));
+
+        exercicioRealizado.getSeries().remove(serie);
+        sessaoDeTreinoRepository.save(sessaoDeTreino);
     }
 }

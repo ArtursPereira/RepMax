@@ -2,6 +2,7 @@ package com.seunome.nextrep.Controller;
 
 
 import com.seunome.nextrep.DTO.mapper.SessaoDeTreinoMapper;
+import com.seunome.nextrep.DTO.request.SerieRequest;
 import com.seunome.nextrep.DTO.request.SessaoDeTreinoRequest;
 import com.seunome.nextrep.DTO.response.SessaoDeTreinoResponse;
 import com.seunome.nextrep.Entity.SessaoDeTreino;
@@ -58,17 +59,38 @@ public class SessaoDeTreinoController {
         return ResponseEntity.ok(sessaoDeTreinoResponse);
     }
 
-    @PostMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}")
-    public ResponseEntity<SessaoDeTreinoResponse> adicionarExercicioRealizado(@PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId){
-        SessaoDeTreino sessaoDeTreino =  sessaoDeTreinoService.addExercicioRealizado(sessaoId, exercicioRealizadoId);
+    @PostMapping("/{sessaoId}/exercicio-realizado/{exercicioId}")
+    public ResponseEntity<SessaoDeTreinoResponse> adicionarExercicioRealizado(
+            @PathVariable Long sessaoId, @PathVariable Long exercicioId){
+        SessaoDeTreino sessaoDeTreino =  sessaoDeTreinoService.addExercicioRealizado(
+                sessaoId, exercicioId);
         SessaoDeTreinoResponse sessaoDeTreinoResponse = SessaoDeTreinoMapper.toResponse(sessaoDeTreino);
         return  ResponseEntity.ok().body(sessaoDeTreinoResponse);
     }
 
     @DeleteMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}")
-    public  ResponseEntity<Void> removerExercicioRealizado(@PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId) {
+    public  ResponseEntity<Void> removerExercicioRealizado(
+            @PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId) {
         sessaoDeTreinoService.removeExercicioRealizado(sessaoId, exercicioRealizadoId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}/serie")
+    public ResponseEntity<SessaoDeTreinoResponse> adicionarSerie(
+            @PathVariable Long sessaoId, @PathVariable Long exercicioRealizadoId
+    , @RequestBody SerieRequest serieRequest){
+        SessaoDeTreino sessaoDeTreino =  sessaoDeTreinoService.addSerie(sessaoId, exercicioRealizadoId,
+                serieRequest.carga(), serieRequest.repeticoes());
+        SessaoDeTreinoResponse sessaoDeTreinoResponse = SessaoDeTreinoMapper.toResponse(sessaoDeTreino);
+        return  ResponseEntity.ok().body(sessaoDeTreinoResponse);
+    }
+
+    @PostMapping("/{sessaoId}/exercicio-realizado/{exercicioRealizadoId}/serie/{serieId}")
+    public ResponseEntity<Void> removerSerie(
+            @PathVariable Long sessaoId
+            , @PathVariable Long exercicioRealizadoId, @PathVariable Long serieId){
+        sessaoDeTreinoService.removeSerie(sessaoId, exercicioRealizadoId, serieId);
+        return  ResponseEntity.noContent().build();
     }
 
 
