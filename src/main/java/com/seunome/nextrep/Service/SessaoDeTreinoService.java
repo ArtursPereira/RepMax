@@ -2,6 +2,7 @@ package com.seunome.nextrep.Service;
 
 import com.seunome.nextrep.Entity.Exercicio;
 import com.seunome.nextrep.Entity.ExercicioRealizado;
+import com.seunome.nextrep.Entity.Serie;
 import com.seunome.nextrep.Entity.SessaoDeTreino;
 import com.seunome.nextrep.Repository.ExercicioRepository;
 import com.seunome.nextrep.Repository.SessaoDeTreinoRepository;
@@ -70,5 +71,22 @@ public class SessaoDeTreinoService {
 
         sessaoDeTreino.getExercicioRealizados().remove(exercicioRealizado); // orphanRemoval deleta o filho quando ele [e removida da lista.
         sessaoDeTreinoRepository.save(sessaoDeTreino);
+    }
+
+    public void addSerie(Long idSessao, Long idExercicioRealizado, float carga, int repeticoes) {
+        SessaoDeTreino sessaoDeTreino = sessaoDeTreinoRepository.findById(idSessao)
+                .orElseThrow(() -> new RuntimeException("Sessao de treino nao encontrada"));
+
+        ExercicioRealizado exercicioRealizado = sessaoDeTreino.getExercicioRealizados()
+                .stream()
+                .filter(er -> er.getId().equals(idExercicioRealizado))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ExercicioRealizado nao encontrado"));
+
+        Serie serie = new Serie();
+        serie.setCarga(carga);
+        serie.setReps(repeticoes);
+        exercicioRealizado.getSeries().add(serie);
+
     }
 }
